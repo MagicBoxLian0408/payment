@@ -1,9 +1,6 @@
 package kr.magicbox.payment.adapter.in.security.configuration;
 
 import kr.magicbox.payment.adapter.in.security.filter.UserInfoExtractFilter;
-import kr.magicbox.payment.adapter.in.security.properties.TrustedIpProperties;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,12 +19,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(TrustedIpProperties.class)
-@RequiredArgsConstructor
 public class SecurityConfiguration {
-
-    private final TrustedIpProperties trustedIpProperties;
-
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -40,7 +32,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new UserInfoExtractFilter(trustedIpProperties), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new UserInfoExtractFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
