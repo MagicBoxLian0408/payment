@@ -40,6 +40,7 @@ public class HandlePaymentCancelCommandService implements HandlePaymentCancelCom
             payment.failCancel();
             paymentRepositoryPort.update(payment);
             paymentOutboxPort.save(PaymentCancelFailedEvent.builder()
+                    .eventId(payment.getOrderId())
                     .orderId(payment.getOrderId())
                     .customerId(payment.getCustomerId())
                     .paymentId(payment.getId().value())
@@ -51,6 +52,7 @@ public class HandlePaymentCancelCommandService implements HandlePaymentCancelCom
         payment.completeCancel();
         paymentRepositoryPort.update(payment);
         paymentOutboxPort.save(PaymentCancelSucceededEvent.builder()
+                .eventId(payment.getOrderId())
                 .orderId(payment.getOrderId())
                 .customerId(payment.getCustomerId())
                 .paymentId(payment.getId().value())
