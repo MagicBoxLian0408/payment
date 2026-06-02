@@ -29,7 +29,8 @@ public class PaymentCommandKafkaListener {
         handlePaymentApproveCommandUseCase.handlePaymentApproveCommand(
                 event.orderId(),
                 event.customerId(),
-                event.totalAmount()
+                event.totalAmount(),
+                event.items()
         );
     }
 
