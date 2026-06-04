@@ -74,7 +74,6 @@ public class ApprovePaymentService implements ApprovePaymentUseCase {
 
     private PaymentSucceededEvent buildSucceededEvent(Payment payment) {
         return PaymentSucceededEvent.builder()
-                .eventId(payment.getOrderId())
                 .orderId(payment.getOrderId())
                 .customerId(payment.getCustomerId())
                 .paymentId(payment.getId().value())
@@ -86,7 +85,6 @@ public class ApprovePaymentService implements ApprovePaymentUseCase {
 
     private PaymentFailedEvent buildFailedEvent(Payment payment, String reason) {
         return PaymentFailedEvent.builder()
-                .eventId(payment.getOrderId())
                 .orderId(payment.getOrderId())
                 .customerId(payment.getCustomerId())
                 .paymentId(payment.getId().value())
