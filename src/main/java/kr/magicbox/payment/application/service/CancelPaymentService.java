@@ -41,7 +41,6 @@ public class CancelPaymentService implements CancelPaymentUseCase {
             payment.failCancel();
             paymentRepositoryPort.update(payment);
             paymentOutboxPort.save(PaymentCancelFailedEvent.builder()
-                    .eventId(payment.getOrderId())
                     .orderId(payment.getOrderId())
                     .customerId(payment.getCustomerId())
                     .paymentId(payment.getId().value())
@@ -53,7 +52,6 @@ public class CancelPaymentService implements CancelPaymentUseCase {
         payment.completeCancel();
         paymentRepositoryPort.update(payment);
         paymentOutboxPort.save(PaymentCancelSucceededEvent.builder()
-                .eventId(payment.getOrderId())
                 .orderId(payment.getOrderId())
                 .customerId(payment.getCustomerId())
                 .paymentId(payment.getId().value())
