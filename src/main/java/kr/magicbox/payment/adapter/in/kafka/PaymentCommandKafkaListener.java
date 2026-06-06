@@ -24,7 +24,7 @@ public class PaymentCommandKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-approve", groupId = "payment-service")
     public void handlePaymentApproveCommand(ConsumerRecord<String, PaymentApproveCommandEvent> consumerRecord) {
-        log.info("[Inbox] payment-approve command 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment-approve command 수신. key={}", consumerRecord.key());
         PaymentApproveCommandEvent event = consumerRecord.value();
         handlePaymentApproveCommandUseCase.handlePaymentApproveCommand(
                 event.orderId(),
@@ -38,7 +38,7 @@ public class PaymentCommandKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-cancel", groupId = "payment-service")
     public void handlePaymentCancelCommand(ConsumerRecord<String, PaymentCancelCommandEvent> consumerRecord) {
-        log.info("[Inbox] payment-cancel command 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment-cancel command 수신. key={}", consumerRecord.key());
         PaymentCancelCommandEvent event = consumerRecord.value();
         handlePaymentCancelCommandUseCase.handlePaymentCancelCommand(event.orderId(), event.customerId());
     }
