@@ -4,5 +4,5 @@ import kr.magicbox.payment.adapter.out.persistence.entity.PaymentInboxEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentInboxJpaRepository extends JpaRepository<PaymentInboxEntity, Long> {
-    boolean existsByKafkaKey(String kafkaKey);
+    boolean existsByKey(String key);
 }
