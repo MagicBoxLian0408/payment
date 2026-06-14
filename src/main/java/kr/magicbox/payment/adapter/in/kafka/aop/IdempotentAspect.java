@@ -31,16 +31,15 @@ public class IdempotentAspect {
     @Around("@annotation(kr.magicbox.payment.adapter.in.kafka.annotation.Idempotent)")
     public Object around(ProceedingJoinPoint pjp) {
         ConsumerRecord<String, ?> consumerRecord = extractRecord(pjp);
-
+        String eventKey = consumerRecord.key();
         InboxEvent event = (InboxEvent) consumerRecord.value();
-        String key = consumerRecord.key();
         Instant occurredAt = event.occurredAt();
 
         if (isTooOld(occurredAt)) {
-            log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. key={}, occurredAt={}", key, occurredAt);
+            log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. key={}, occurredAt={}", eventKey, occurredAt);
             transactionTemplate.executeWithoutResult(status ->
                 paymentInboxJpaRepository.save(PaymentInboxEntity.builder()
-                        .key(key)
+                        .eventKey(eventKey)
                         .topic(consumerRecord.topic())
                         .partition(consumerRecord.partition())
                         .offset(consumerRecord.offset())
@@ -52,12 +51,12 @@ public class IdempotentAspect {
         }
 
         return transactionTemplate.execute(status -> {
-            if (paymentInboxJpaRepository.existsByKey(key)) {
-                log.warn("[Inbox] 중복 메시지 폐기. key={}", key);
+            if (paymentInboxJpaRepository.existsByEventKey(eventKey)) {
+                log.warn("[Inbox] 중복 메시지 폐기. key={}", eventKey);
                 return null;
             }
             PaymentInboxEntity inbox = paymentInboxJpaRepository.save(PaymentInboxEntity.builder()
-                    .key(key)
+                    .eventKey(eventKey)
                     .topic(consumerRecord.topic())
                     .partition(consumerRecord.partition())
                     .offset(consumerRecord.offset())
