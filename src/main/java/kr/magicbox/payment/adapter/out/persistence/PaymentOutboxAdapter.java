@@ -21,6 +21,7 @@ public class PaymentOutboxAdapter implements PaymentOutboxPort {
         paymentOutboxJpaRepository.save(PaymentOutboxEntity.builder()
                 .eventType(event.eventType().getValue())
                 .payload(payload)
+                .orderId(event.orderId())
                 .build());
     }
 }

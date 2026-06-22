@@ -20,9 +20,13 @@ public class PaymentOutboxEntity extends BaseEntity {
     @Column(nullable = false, columnDefinition = "JSON")
     private String payload;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
     @Builder
-    public PaymentOutboxEntity(String eventType, String payload) {
+    public PaymentOutboxEntity(String eventType, String payload, Long orderId) {
         this.eventType = eventType;
         this.payload = payload;
+        this.orderId = orderId;
     }
 }
