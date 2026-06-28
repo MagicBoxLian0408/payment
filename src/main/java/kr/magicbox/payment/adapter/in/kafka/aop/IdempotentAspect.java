@@ -39,7 +39,7 @@ public class IdempotentAspect {
             log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. key={}, occurredAt={}", key, occurredAt);
             transactionTemplate.executeWithoutResult(status ->
                 paymentInboxJpaRepository.save(PaymentInboxEntity.builder()
-                        .eventKey(key)
+                        .key(key)
                         .topic(consumerRecord.topic())
                         .partition(consumerRecord.partition())
                         .offset(consumerRecord.offset())
@@ -51,12 +51,12 @@ public class IdempotentAspect {
         }
 
         return transactionTemplate.execute(status -> {
-            if (paymentInboxJpaRepository.existsByEventKey(key)) {
+            if (paymentInboxJpaRepository.existsByKey(key)) {
                 log.warn("[Inbox] 중복 메시지 폐기. key={}", key);
                 return null;
             }
             paymentInboxJpaRepository.save(PaymentInboxEntity.builder()
-                    .eventKey(key)
+                    .key(key)
                     .topic(consumerRecord.topic())
                     .partition(consumerRecord.partition())
                     .offset(consumerRecord.offset())
